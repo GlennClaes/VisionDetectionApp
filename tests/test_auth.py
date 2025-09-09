@@ -1,5 +1,3 @@
-import tempfile
-import os
 from db import Database
 from auth import Auth
 

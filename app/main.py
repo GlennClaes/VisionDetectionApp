@@ -18,7 +18,7 @@ def main():
     root.attributes("-fullscreen", True)
     root.configure(bg="#2c3e50")
 
-    app = HandFaceApp(root, cfg, db)
+    HandFaceApp(root, cfg, db)
     root.mainloop()
 
 if __name__ == "__main__":

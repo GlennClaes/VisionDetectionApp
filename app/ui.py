@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import threading
 import queue
@@ -175,7 +176,10 @@ class HandFaceApp:
         from datetime import datetime
 
         os.makedirs("data/photos", exist_ok=True)
-        filename = f"data/photos/{self.username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        filename = (
+            f"data/photos/{self.username}_"
+            f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        )
         cv2.imwrite(filename, self.latest_frame)
         print(f"Snapshot saved: {filename}")
 

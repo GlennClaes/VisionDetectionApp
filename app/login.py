@@ -24,8 +24,17 @@ class LoginRegisterDialog:
         self.entry_pass = ttk.Entry(self.frame, show="*")
         self.entry_pass.grid(row=1, column=1)
 
-        ttk.Button(self.frame, text="Login", command=self.login).grid(row=2, column=0)
-        ttk.Button(self.frame, text="Register", command=self.register).grid(row=2, column=1)
+        ttk.Button(
+            self.frame,
+            text="Login",
+            command=self.login
+        ).grid(row=2, column=0)
+
+        ttk.Button(
+            self.frame,
+            text="Register",
+            command=self.register,
+        ).grid(row=2, column=1)
 
     def login(self):
         username = self.entry_user.get().strip()
