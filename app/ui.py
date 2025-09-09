@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
 from PIL import Image, ImageTk
 import threading
 import queue
@@ -159,8 +158,12 @@ class HandFaceApp:
                 self.video_label.imgtk = imgtk
                 self.video_label.configure(image=imgtk)
 
-                self.age_label.config(text=f"Age: {stable_age}")
-                self.emotion_label.config(text=f"Emotion: {stable_emotion}")
+                self.age_label.config(
+                    text=f"Age: {stable_age}"
+                )
+                self.emotion_label.config(
+                    text=f"Emotion: {stable_emotion}"
+                )
         except queue.Empty:
             pass
         self.root.after(50, self.update_loop)
