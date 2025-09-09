@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  detector:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../data:/app/data
+      - ../models:/app/models      # mount your model files here (age_deploy.prototxt & age_net.caffemodel)
+    environment:
+      - PYTHONUNBUFFERED=1
+    # For GUI you'd need X11 forwarding; this compose is for headless runs
