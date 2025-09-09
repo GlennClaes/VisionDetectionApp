@@ -14,7 +14,9 @@ a = Analysis(
     runtime_hooks=[],
     excludes=[]
 )
+
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
 exe = EXE(
     pyz,
     a.scripts,
@@ -24,9 +26,10 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=False,  # Zet tijdelijk uit voor macOS/Windows CI builds
+    upx=False,  # voorkomt CI issues
     console=True
 )
+
 coll = COLLECT(
     exe,
     a.binaries,

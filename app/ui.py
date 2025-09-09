@@ -1,10 +1,13 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
+from tkinter import messagebox
 from PIL import Image, ImageTk
-import threading, queue, cv2
+import threading
+import queue
+import cv2
 from worker import VideoWorker
-from models import AgeStabilizer, EmotionStabilizer
 from auth import Auth
+
 
 class HandFaceApp:
     def __init__(self, root, cfg, db):
@@ -34,7 +37,7 @@ class HandFaceApp:
             bd=0,
             relief="flat",
             activebackground="#c0392b",
-            activeforeground="white"
+            activeforeground="white",
         )
         self.btn_close.pack(side="right", padx=10, pady=5)
 
@@ -42,16 +45,21 @@ class HandFaceApp:
         self.login_frame = tk.Frame(root, bg="#34495e")
         self.login_frame.pack(expand=True, fill="both")
 
-        tk.Label(self.login_frame, text="Login", font=("Helvetica", 36, "bold"),
-                 fg="#ecf0f1", bg="#34495e").pack(pady=40)
+        tk.Label(
+            self.login_frame,
+            text="Login",
+            font=("Helvetica", 36, "bold"),
+            fg="#ecf0f1",
+            bg="#34495e",
+        ).pack(pady=40)
 
         self.entry_user = ttk.Entry(self.login_frame, font=("Helvetica", 18))
         self.entry_user.pack(pady=10)
-        self.entry_user.insert(0, "")  # Start empty
+        self.entry_user.insert(0, "")
 
         self.entry_pass = ttk.Entry(self.login_frame, show="*", font=("Helvetica", 18))
         self.entry_pass.pack(pady=10)
-        self.entry_pass.insert(0, "")  # Start empty
+        self.entry_pass.insert(0, "")
 
         ttk.Button(self.login_frame, text="Login", command=self.login).pack(pady=20)
         ttk.Button(self.login_frame, text="Register", command=self.register).pack()
@@ -65,17 +73,29 @@ class HandFaceApp:
         self.info_frame = tk.Frame(self.detect_frame, bg="#2c3e50")
         self.info_frame.pack(pady=10)
 
-        self.age_label = tk.Label(self.info_frame, text="Age: ?", font=("Helvetica", 28, "bold"),
-                                  fg="cyan", bg="#2c3e50")
+        self.age_label = tk.Label(
+            self.info_frame,
+            text="Age: ?",
+            font=("Helvetica", 28, "bold"),
+            fg="cyan",
+            bg="#2c3e50",
+        )
         self.age_label.pack(side="left", padx=30)
 
-        self.emotion_label = tk.Label(self.info_frame, text="Emotion: ?", font=("Helvetica", 28, "bold"),
-                                      fg="magenta", bg="#2c3e50")
+        self.emotion_label = tk.Label(
+            self.info_frame,
+            text="Emotion: ?",
+            font=("Helvetica", 28, "bold"),
+            fg="magenta",
+            bg="#2c3e50",
+        )
         self.emotion_label.pack(side="left", padx=30)
 
         self.btn_frame = tk.Frame(self.detect_frame, bg="#2c3e50")
         self.btn_frame.pack(pady=15)
-        self.snapshot_btn = ttk.Button(self.btn_frame, text="Snapshot", command=self.take_snapshot)
+        self.snapshot_btn = ttk.Button(
+            self.btn_frame, text="Snapshot", command=self.take_snapshot
+        )
         self.snapshot_btn.pack(side="left", padx=15)
         self.stop_btn = ttk.Button(self.btn_frame, text="Stop", command=self.on_close)
         self.stop_btn.pack(side="left", padx=15)
@@ -122,9 +142,16 @@ class HandFaceApp:
                 self.latest_frame = frame.copy()
 
                 for (x, y, w, h) in getattr(self.worker, "last_faces", []):
-                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                    cv2.putText(frame, f"{stable_age}, {stable_emotion}", (x, y-10),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    cv2.putText(
+                        frame,
+                        f"{stable_age}, {stable_emotion}",
+                        (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.9,
+                        (0, 255, 255),
+                        2,
+                    )
 
                 img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 img = Image.fromarray(img)
@@ -143,6 +170,7 @@ class HandFaceApp:
             return
         import os
         from datetime import datetime
+
         os.makedirs("data/photos", exist_ok=True)
         filename = f"data/photos/{self.username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
         cv2.imwrite(filename, self.latest_frame)

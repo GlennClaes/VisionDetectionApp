@@ -1,7 +1,9 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
+from tkinter import messagebox
 from db import Database
 from auth import Auth
+
 
 class LoginRegisterDialog:
     def __init__(self, root, db: Database):
@@ -28,17 +30,28 @@ class LoginRegisterDialog:
     def login(self):
         username = self.entry_user.get().strip()
         password = self.entry_pass.get().strip()
+
         row = self.db.get_user_hash(username)
         if row and Auth.verify_password(password, row[0]):
             self.username = username
-            self.top.destroy()  # close login window
+            self.top.destroy()
         else:
-            messagebox.showerror("Login failed", "Invalid username or password")
+            messagebox.showerror(
+                "Login failed",
+                "Invalid username or password"
+            )
 
     def register(self):
         username = self.entry_user.get().strip()
         password = self.entry_pass.get().strip()
+
         if self.db.add_user(username, Auth.hash_password(password)):
-            messagebox.showinfo("Success", "User registered successfully!")
+            messagebox.showinfo(
+                "Success",
+                "User registered successfully!"
+            )
         else:
-            messagebox.showerror("Error", "Username already exists")
+            messagebox.showerror(
+                "Error",
+                "Username already exists"
+            )
