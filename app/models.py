@@ -14,10 +14,12 @@ class AgeEmotionModel:
         # Leeftijdsmodel (Caffe)
         self.age_net = cv2.dnn.readNetFromCaffe(age_proto, age_model)
 
-        # Emotiemodel (Keras/TensorFlow)
-        self.emotion_net = load_model(emotion_model)
+        # Emotiemodel (Keras/TensorFlow) — compile=False avoids optimizer errors
+        self.emotion_net = load_model(emotion_model, compile=False)
+
+        # Engelse labels voor emotie
         self.emotion_labels = [
-            "Boos", "Walging", "Bang", "Blij", "Verdrietig", "Verbaasd", "Neutraal"
+            "Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"
         ]
 
         # Haarcascades
@@ -34,23 +36,51 @@ class AgeEmotionModel:
             )
             self.age_net.setInput(blob)
             preds = self.age_net.forward()
-            return AGE_BUCKETS[preds[0].argmax()]
+            return AGE_BUCKETS[int(np.argmax(preds[0]))]
         except Exception:
             return "?"
 
     # --- Emotie voorspellen ---
     def predict_emotion(self, face_gray):
         try:
+            # Resize to 48x48
             face_resized = cv2.resize(face_gray, (48, 48))
-            face_resized = face_resized.astype("float") / 255.0
+
+            # Normalize pixels to 0-1
+            face_resized = face_resized.astype("float32") / 255.0
+
+            # Expand dims for channels and batch
             face_resized = np.expand_dims(face_resized, axis=-1)  # (48,48,1)
             face_resized = np.expand_dims(face_resized, axis=0)   # (1,48,48,1)
 
-            preds = self.emotion_net.predict(face_resized, verbose=0)[0]
-            idx = np.argmax(preds)
+            # Make prediction
+            preds = self.emotion_net.predict(face_resized, verbose=0)
+            idx = int(np.argmax(preds[0]))
+
+            # Clamp idx in range
+            if idx < 0 or idx >= len(self.emotion_labels):
+                return "Unknown"
+
             return self.emotion_labels[idx]
-        except Exception:
-            return "Onbekend"
+
+        except Exception as e:
+            print(f"[Emotion Predict Error] {e}")
+            return "Unknown"
+
+
+# --- Emotie stabilisatie ---
+class EmotionStabilizer:
+    def __init__(self, buffer_size=10):
+        self.history = deque(maxlen=buffer_size)
+
+    def update(self, emotion_str):
+        self.history.append(emotion_str)
+
+    def get_stable_emotion(self):
+        if not self.history:
+            return "Unknown"
+        return max(set(self.history), key=self.history.count)
+
 
 # --- Leeftijd stabilisatie ---
 class AgeStabilizer:

@@ -31,3 +31,8 @@ Als je wilt plak ik nu direct:
 3. of help ik je met commando’s om de modelbestanden te downloaden — kies wat je nu wilt.
 
 Wil je dat ik nu meteen de CI workflows en PyInstaller stappen toevoeg (dan presenteer ik twee workflow bestanden en een `pyinstaller.spec` voorbeeld)?
+
+(base) PS C:\Projecten\VisionDetectionApp> python -m venv .venv
+>> .venv\Scripts\activate
+>> python -m pip install --upgrade pip
+>> pip install -r requirements.txt

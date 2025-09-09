@@ -1,19 +1,12 @@
-# =========================
-# Bestand: main.py
-# =========================
 import tkinter as tk
 from config import AppConfig
 from db import Database
-from login import LoginDialog
+from auth import Auth
 from ui import HandFaceApp
 
-from auth import Auth
-
-# Zorg dat er minimaal 1 admin bestaat
 def init_admin(db: Database):
     if not db.get_user_hash("admin"):
         db.add_user("admin", Auth.hash_password("admin"))
-
 
 def main():
     cfg = AppConfig()
@@ -21,13 +14,11 @@ def main():
     init_admin(db)
 
     root = tk.Tk()
-    dlg = LoginDialog(root, db)
-    if not dlg.username:
-        root.destroy()
-        return
+    root.title("Age & Emotion Detection")
+    root.attributes("-fullscreen", True)
+    root.configure(bg="#2c3e50")
 
-    app = HandFaceApp(root, cfg)
-    root.protocol("WM_DELETE_WINDOW", app.on_close)
+    app = HandFaceApp(root, cfg, db)
     root.mainloop()
 
 if __name__ == "__main__":
